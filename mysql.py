@@ -11,11 +11,11 @@ def getdata(sql):
 
 
 if __name__ == '__main__':
-    # sql = "select * from user"
-    sql2 = "CREATE DATABASE bookstoredb;"
-    # data = getdata(sql)
-    data2 = getdata(sql2)
-    print(data)
+    sql = "show tables"
+    # sql2 = "CREATE DATABASE bookstoredb;"
+    data = getdata(sql)
+    # data2 = getdata(sql2)
+    print(len(data))
     for i in data:
         print(i)
-    print(data2)
+    # print(data2)
