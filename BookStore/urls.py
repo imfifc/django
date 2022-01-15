@@ -23,4 +23,8 @@ urlpatterns = [
     path('test/', views.test_html),
     path('test2/', views.test2_html),
     path('test3/', views.test3_html),
+    path('test_if/', views.test_if),
+    path('test_if2/', views.test_if2),
+    path('test_for/', views.test_for),
+    path('test_for2/', views.test_for2),
 ]
