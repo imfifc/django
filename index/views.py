@@ -108,3 +108,34 @@ def test_for2(request):
     webname = Context({'list01': [['Django', 'Flask', 'Tornado'], ['c语言中网', 'Django官网', 'Pytho官网']]})
     html = website.render(webname)
     return HttpResponse(html)
+
+
+def test_filter(request):
+    t = Template("""
+    <p>hello:{{value|truncatewords:2}}
+    <p>v1 :{{value|length}}
+    <p>value2:{{value2|dictsort:"num"}}
+    
+    <p>value3: {{value3|add:2}}
+    <p>value4: {{value4|add:list}}
+    
+     {% for book in books|dictsort:"author.age" %}
+        <div><b>{{ book.title }} ({{ book.author.name }})
+     {% endfor %}
+    """)
+    html = t.render(Context({
+        'value': "hhe hhh 222 333",
+        'books': [
+            {'title': 'C语言教程', 'author': {'name': 'ycs', 'age': 14}},
+            {'title': 'Python教程', 'author': {'name': 'xxw', 'age': 17}},
+            {'title': 'Django教程', 'author': {'name': 'ccs', 'age': 16}}],
+        'value3': 3,
+        'value4': [1],
+        "list": [2, 4],
+    }))
+
+    return HttpResponse(html)
+
+
+def test_url(request):
+    return render(request, 'test_url.html')

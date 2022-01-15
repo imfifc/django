@@ -27,4 +27,7 @@ urlpatterns = [
     path('test_if2/', views.test_if2),
     path('test_for/', views.test_for),
     path('test_for2/', views.test_for2),
+    path('test_filter/', views.test_filter, name='hello2'),
+    path('test_url/', views.test_url, name='hello'),
+    # path('Hello_MyWeb/', views.Hello_MyWeb, name='hello')
 ]
