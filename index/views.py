@@ -4,8 +4,9 @@ from django.shortcuts import render
 # 方式一
 from django.template import loader  # 导入loader方法
 from django.shortcuts import render  # 导入render 方法
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Template, Context  # 调用template、以及上下文处理器方法
+from django.urls import reverse
 
 
 def test_html(request):
@@ -257,3 +258,29 @@ def user_define_filter(request):
         """)
     html = t.render(Context({'Web': 'Web django Django', 'values': [9, 1, 4, 3]}))
     return HttpResponse(html)
+
+
+def redict_url(request):
+    return render(request, 'index/newtest.html')
+
+
+# reverse函数实现反向解析重定向到我们想要的有页面
+def test_to_reverse(request):
+    """
+        上面我们使用 reverse 函数完成了视图函数的重定向，但是这里还要给大家简单介绍一下 reverse() 函数。在 Django中 reverse() 的定义如下所示：
+    reverse(viewname,urlconf=None,args=None,kwargs=None,current_app=None)
+
+    它只有一个必填参数，其他都是可选参数。其中 viewname 参数除了可以接受 url 路由 name 的别名以外，还可以接受可调用视图函数对象作为参数。示例如下：
+    from BookStore import views
+    def test_to_reverse(request):
+        return HttpResponseRedirect(reverse(views.test_url))
+    其他参数说明如下：
+    urlconf：这个属性用于决定当前的反向解析使用哪个 URLconf 模块,默认是根 URLconf；
+    args：它用于传递参数，可以是元组或者列表，顺序填充 url 中的位置参数；
+    kwargs：字典类型的传参，和 args 作用一样；
+    current_app:它指定当前视图函数所在的 app，本例中是 index 应用。
+    """
+    # return HttpResponseRedirect(reverse('index:detail_hello'))  # 应用名:url 别名
+    return HttpResponseRedirect(
+        reverse('index:detail_hello', current_app=request.resolver_match.namespace))  # 命令空间 可以满足不同的app 下 相同的path
+    # return HttpResponseRedirect(reverse(test_url))  # 应用名:url 别名
