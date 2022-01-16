@@ -29,5 +29,9 @@ urlpatterns = [
     path('test_for2/', views.test_for2),
     path('test_filter/', views.test_filter, name='hello1'),
     path('test_url/', views.test_url),
-    path('Hello_MyWeb/<int:id>', views.Hello_MyWeb, name='hello')
+
+    path('Hello_MyWeb/<int:id>', views.Hello_MyWeb, name='hello'),
+    path('test_lable/', views.user_define_lable),
+    path('test_inclusion_lable/', views.inclusion_lable),
+    path('test_assignment_tag/', views.assignment_tag),
 ]

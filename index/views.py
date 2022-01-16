@@ -114,7 +114,7 @@ def test_filter(request):
     t = Template("""
     <p>hello:{{value|truncatewords:2}}
     <p>v1 :{{value|length}}
-    <p>value2:{{value2|dictsort:"num"}}
+    <p>value2:{{value2|dictsort:"num"}} 空
     
     <p>value3: {{value3|add:2}}
     <p>value4: {{value4|add:list}}
@@ -148,4 +148,32 @@ def Hello_MyWeb(request, id):
         """
     )
     html = t.render(Context({"id": id}))
+    return HttpResponse(html)
+
+
+def user_define_lable(request):
+    t = Template("""
+        {% load index_tags %}
+        {% addstr_tag 'Django BookStore' %}
+        """)
+    html = t.render(Context())
+    return HttpResponse(html)
+
+
+def inclusion_lable(request):
+    t = Template("""
+    {% load index_tags %}
+    {% add_webname_tag 'C 语言中文网  XXX' %}
+    """)
+    html = t.render(Context({'varible': 'Hello'}))
+    return HttpResponse(html)
+
+
+def assignment_tag(request):
+    t = Template("""
+    {% load index_tags %}
+    {% test_as_tag '语言中文网欢迎你' as test %}   
+    <p>{{ test }}</p>
+    """)
+    html = t.render(Context())
     return HttpResponse(html)
