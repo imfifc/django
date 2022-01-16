@@ -34,4 +34,7 @@ urlpatterns = [
     path('test_lable/', views.user_define_lable),
     path('test_inclusion_lable/', views.inclusion_lable),
     path('test_assignment_tag/', views.assignment_tag),
+    path('equal_lable/', views.equal_lable),
+    path('ifchanged_lable/', views.ifchanged_lable),
+    path('cycle_lable/', views.cycle_lable),
 ]

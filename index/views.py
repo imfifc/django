@@ -179,3 +179,58 @@ def assignment_tag(request):
     """)
     html = t.render(Context())
     return HttpResponse(html)
+
+
+def equal_lable(request):
+    t = Template("""
+      {% ifequal n1 n2 %}
+        <p>{{ n1 }} equal {{ n2 }}</p>
+      {% else %}
+        <p>{{ n1 }} not equal {{ n2 }} </p>
+      {% endifequal %}
+       """)
+    html = t.render(Context({'n1': 'python', 'n2': 'python'}))
+    return HttpResponse(html)
+
+
+def ifchanged_lable(request):
+    t = Template("""
+         {% for name in webnames %}
+             {% ifchanged %}
+             {{name.1|add:'xxxxx'}}
+             {% endifchanged %}
+         {% endfor %}    
+         """)
+    html = t.render(Context({'webnames': [['Python', 'Flask'], 'java', 'c语言']}))
+    return HttpResponse(html)
+
+
+def cycle_lable(request):
+    # cycle的参数为字符串，用引号引起来
+    # cycle参数为变量，需要用字典为其赋值
+    """cycle 标签也可与 resetcycle 标签配合使用，resetcycle 表示重置上一个循环，遇到此标签时，将从 cycle 标签的第一个参数重新开始，
+     cycle 还提供了关键字 silent，正如它英语含义一样，它表示不输入参数值，只显示循环周期的内容，即不会给 class 属性赋值
+    """
+    t = Template("""
+     {% for i in some_list %}
+       <tr>
+            <td class="{% cycle v1 v2 %}">...</td>
+            <td class="{% cycle 'row1' 'row2' as rowcolors  silent %}">...</td>
+            <td class="{{ rowcolors }}">111</td>
+        </tr>
+        <tr>
+            <td class="{% cycle rowcolors %}">...</td>
+            <td class="{{ rowcolors }}">222</td>
+        </tr>
+             <p>{{ i }}</p>
+         </tr>^M
+     {% endfor %}
+     
+     {% comment %}
+     多行注释  
+     {% endcomment %}
+     
+     {# 单行注释 #}
+     """)
+    html = t.render(Context({'some_list': ['Python', 'Flask'], "v1": "v1", "v2": "v2"}, autoescape=False))
+    return HttpResponse(html)

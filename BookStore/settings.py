@@ -114,9 +114,10 @@ LANGUAGE_CODE = 'zh-Hans'
 
 TIME_ZONE = 'Asia/Shanghai'
 
-USE_I18N = True
+USE_I18N = True  # 该库允许在模板中指定可翻译文本。要启用它，请将设置 USE_I18N=True，然后加载使用 {% load i18n %}
+USE_L10N = True  # 该库可控制模板中值的本地化。您只需要使用即可加载库，但通常会设置为 USE_L10N=True，以便默认情况下本地化处于活动状态。使用 {% load l10n %} 加载。
 
-USE_TZ = False  # 表示对时区不敏感，并且让数据库时间符合本地时区。
+USE_TZ = True  # 表示对时区不敏感，并且让数据库时间符合本地时区。 该库可控制模板中的时区转换。像一样l10n，但通常还需要将其设置为 USE_TZ=True 默认情况下转换为本地时间。使用 {% load tz %} 加载。
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
