@@ -234,3 +234,26 @@ def cycle_lable(request):
      """)
     html = t.render(Context({'some_list': ['Python', 'Flask'], "v1": "v1", "v2": "v2"}, autoescape=False))
     return HttpResponse(html)
+
+
+# 定义父模板视图函数
+def base_html(request):
+    return render(request, 'index/base.html')
+
+
+# 定义子模板视图函数
+def index_html(request):
+    name = 'xiaoming'
+    course = ['python', 'django', 'flask']
+    return render(request, 'index/test.html', locals())
+    # locals() 获取当前环境的局部变量
+
+
+def user_define_filter(request):
+    t = Template("""
+        {% load index_tags %}
+        <h1> : {{ Web|hello_my_filter }}</h1>
+       使用过滤器排序 values|sorted ： {{ values|sorted }}
+        """)
+    html = t.render(Context({'Web': 'Web django Django', 'values': [9, 1, 4, 3]}))
+    return HttpResponse(html)

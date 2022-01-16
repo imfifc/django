@@ -1,0 +1,32 @@
+{% extends 'index/base.html' %}
+<!--重写title-->
+    {% block title %}
+        欢迎你学习Django教程
+    {% endblock %}
+<!--区域1保持父模板默认状态-->
+<!--对父模板的区域2进行重写-->
+
+{% block test %}
+{{ block.super }} 哈哈哈   "block.super"实现父模板内容添加
+{% endblock test %}
+
+{% block content %}
+    {% for item in course %}
+        <li>{{ item }}</li>
+    {% endfor %}
+{% endblock content %}
+
+{% block footer %}
+    <p>最后希望<span style="color:#0022ff">
+        {{ name }}
+    </span>在C语言中文网学习可以学有所成</p>
+{% endblock footer %}
+
+{% comment %}
+本节介绍了模板继承的使用，以及它的优势，Django 官网建议，在父模板中应尽量多的使用 {% block %} 标签，这样可以给我们更多的选择空间。本节知识点总结如下：
+block 标签需要成对出现，使用 {{ endblock }} 作为结束标签；
+定义 block 标签名字，子模板中具有同样名称的 block 块完成对父模板的替换；
+子模板不需要定义父模板中的所有 block，未定义时，子模板将原样使用父模板中的内容；
+子模板需要使用 {% extends %} 标签继承父模板，且必须是模板中的第一个标签，并放在文件的第一行；
+子模板不覆盖父模板而是对父模板内容进行添加，此时使用 {{ block.super }} 变量来获取父模板 block 块的内容。
+{% endcomment %}

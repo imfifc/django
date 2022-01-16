@@ -20,3 +20,13 @@ def add_webname_tag(context, namestr):  # 使用takes_context=True此时第一�
 @register.simple_tag
 def test_as_tag(strs):
     return 'Hello Test Tag -%s' % strs
+
+
+@register.filter
+def hello_my_filter(value):
+    return value.replace('django', 'Python')
+
+
+@register.filter(name='sorted')  # 使用name参数指定别名
+def sorted_filter(value):
+    return sorted(value)
