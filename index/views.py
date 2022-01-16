@@ -139,3 +139,13 @@ def test_filter(request):
 
 def test_url(request):
     return render(request, 'test_url.html')
+
+
+def Hello_MyWeb(request, id):
+    t = Template(
+        """
+        <p>  id： {{ id }} {{ str }}</p>
+        """
+    )
+    html = t.render(Context({"id": id}))
+    return HttpResponse(html)
