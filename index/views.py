@@ -161,15 +161,17 @@ def user_define_lable(request):
 
 
 def inclusion_lable(request):
+    # 实际就是去改引用模板的变量
     t = Template("""
     {% load index_tags %}
-    {% add_webname_tag 'C 语言中文网  XXX' %}
+    {% add_webname_tag 'C 语言中文网——XXX' %}
     """)
     html = t.render(Context({'varible': 'Hello'}))
     return HttpResponse(html)
 
 
 def assignment_tag(request):
+    # 直接赋值
     t = Template("""
     {% load index_tags %}
     {% test_as_tag '语言中文网欢迎你' as test %}   
