@@ -24,4 +24,7 @@ urlpatterns = [
     # re_path('test/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/(?P<slug>[^/]+)/', views.article_test),
     # re_path(r'^test/(?P<year>[0-9]{4})/$', views.year_test),
     # path('test/<int:year>/', views.year_test),
+    path('allbook/', views.BookName),
+    path('allauthor/', views.authorname),
+
 ]

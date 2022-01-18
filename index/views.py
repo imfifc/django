@@ -8,6 +8,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Template, Context  # 调用template、以及上下文处理器方法
 from django.urls import reverse
 
+from index.models import Book, Author, UserInfo
+
 
 def test_html(request):
     t = loader.get_template('test.html')
@@ -284,3 +286,21 @@ def test_to_reverse(request):
     return HttpResponseRedirect(
         reverse('index:detail_hello', current_app=request.resolver_match.namespace))  # 命令空间 可以满足不同的app 下 相同的path
     # return HttpResponseRedirect(reverse(test_url))  # 应用名:url 别名
+
+# 原生sql
+def BookName(request):
+    books = Book.objects.raw("select * from index_book")  # 书写sql语句
+    return render(request, "index/allbook.html", locals())
+
+# params  %s 传参防注入
+def authorname(request):
+    authors = Author.objects.raw("select id from index_author where name= %s",['Tom'])
+    t = Template("""
+        {% for author in authors %}
+        <h1>  {{ author.name }} : {{ author.email}}</h1>
+        {% endfor %}
+        """)
+    html = t.render(Context({"authors": authors}))
+    return HttpResponse(html)
+
+# 游标 cursor 对数据库进行增删改操作
