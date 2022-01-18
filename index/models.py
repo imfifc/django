@@ -1,6 +1,6 @@
 from django.db import models
 from django.db import connection
-from django.db.models import F
+from django.db.models import F, Q
 
 """
 #定义该model在数据库中的表名称
@@ -217,3 +217,26 @@ with connection.cursor() as cur:
     cur.execute('update index_author set name="Jack"  where id=4;')
     # 删除id为3的一条author记录
     cur.execute('delete from index_author where id=3;')
+
+# 给Book所有实例价格（retail_price）涨价20元
+# Book.objects.all().update(retail_price=F('retail_price') + 10)  # 获取该列所有值并加20
+# 利用传统的方法实现涨价20元
+# books = Book.objects.all()
+# for book in books:
+#     book.update(retail_price=book.retail_price + 20)
+#     book.save()
+
+"""
+# 对数据库中两个字段的值进行比较，列出哪儿些书的零售价高于定价
+books = Book.objects.filter(retail_price__gt=F('price'))
+for book in books:
+    print(book.title, '定价:', book.price, '现价:', book.retail_price)
+
+Book.objects.filter(Q(title__contains="P"))
+# 查找c语言中文网出版的书或价格低于35的书
+Book.objects.filter(Q(retail_price__lt=55) | Q(pub_id='2'))  # 两个Q对象是或者的逻辑关系
+# 查找不是c语言中文出版的书且价格低于45的书
+Book.objects.filter(Q(retail_price__lt=45) & ~Q(pub_id='2'))  # 条件1成立条件2不成立
+
+Book.objects.filter(Q(price__lte=100),title__icontains="p")#组合使用  icontains 忽略大小写
+"""
