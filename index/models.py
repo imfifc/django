@@ -1,5 +1,6 @@
 from django.db import models
 from django.db import connection
+from django.db.models import F
 
 """
 #定义该model在数据库中的表名称
@@ -24,7 +25,7 @@ class Book(models.Model):  # 创建 book 表
         return '￥30'
 
     retail_price = models.DecimalField(max_digits=7, decimal_places=2, verbose_name='零售价', default=default_price)
-    pub = models.ForeignKey(to=PubName, on_delete=models.CASCADE, null=True)  # 创建Foreign外键关联pub,以pub_id关联
+    pub = models.ForeignKey(to=PubName, on_delete=models.CASCADE, null=True)  # 创建Foreign外键关联pub,以pub_id关联   :: 一对多
 
     def __str__(self):
         return "title:%s pub:%s price:%s" % (self.title, self.pub, self.price)
@@ -33,26 +34,36 @@ class Book(models.Model):  # 创建 book 表
 class Author(models.Model):  # 创建作者表
     name = models.CharField(max_length=30, verbose_name='姓名')
     email = models.EmailField(verbose_name='邮箱')
+    books = models.ManyToManyField(to="Book")  # 创建多对多映射关系  :: 多对多
 
     def __str__(self):
         return '作者：%s' % (self.name)
+
+    """也可以自己建立中间表，然后通过 Author 表中 books 字段的 through 参数指向这张中间表"""
 
 
 class UserInfo(models.Model):  # 创建用户信息表
     username = models.CharField(max_length=24, verbose_name='用户注册')
     password = models.CharField(max_length=24, verbose_name='密码')
     # 定义chocies参数的对应关系，以元组（或者列表）的形式进行表述：
-    # choices = (
-    #     (male, '男性'),
-    #     (female, '女性'),
-    # )
-    # gender = models.CharField(max_length=2, choices=choices, default='male')
+    choices = (
+        ('M', '男性'),
+        ('F', '女性'),
+    )
+    gender = models.CharField(max_length=10, choices=choices, default='M')
+
+
+# 新建一对一关用户信息表拓展表,添加完成后执行数据库迁移同步操作
+class ExtendUserinfo(models.Model):
+    user = models.OneToOneField(to=UserInfo, on_delete=models.CASCADE)  # ::一对一
+    signature = models.CharField(max_length=255, verbose_name='用户签名', help_text='自建签名')
+    nickname = models.CharField(max_length=255, verbose_name='昵称', help_text='自建昵称')
 
 
 # python .\manage.py makemigrations
 # python .\manage.py migrate
 # python .\manage.py shell
-
+# python manage.py sqlmigrate index 0007_author_books
 """
 # 创建Book实例化对象
 book = Book(title="Python", public="a", price="59.00", retail_price="59.00")
@@ -70,15 +81,34 @@ Book.objects.create(title="Redis", public="c", price="25.00", retail_price="25.0
 """
 
 # 创建PubName实例化对象pub1并插入书籍信息
-pub1 = PubName.objects.create(pubname="清华出版社")
-Book.objects.create(title="Python", price="59.00", retail_price="59.00", pub=pub1)
-Book.objects.create(title="Redis", price="25.00", retail_price="25.00", pub=pub1)
-Book.objects.create(title="Java", price="45.00", retail_price="45.00", pub=pub1)
-# 创建PubName实例化对象pub2并插入书籍信息
-pub2 = PubName.objects.create(pubname="c语言中文网出版")
-Book.objects.create(title="Django", price="65.00", retail_price="65.00", pub=pub2)
-Book.objects.create(title="Flask", price="45.00", retail_price="45.00", pub=pub2)
-Book.objects.create(title="Tornado", price="35.00", retail_price="35.00", pub=pub2)
+# pub1 = PubName.objects.create(pubname="清华出版社")
+# Book.objects.create(title="Python", price="59.00", retail_price="59.00", pub=pub1)
+# Book.objects.create(title="Redis", price="25.00", retail_price="25.00", pub=pub1)
+# Book.objects.create(title="Java", price="45.00", retail_price="45.00", pub=pub1)
+# # 创建PubName实例化对象pub2并插入书籍信息
+# pub2 = PubName.objects.create(pubname="c语言中文网出版")
+# Book.objects.create(title="Django", price="65.00", retail_price="65.00", pub=pub2)
+# Book.objects.create(title="Flask", price="45.00", retail_price="45.00", pub=pub2)
+# Book.objects.create(title="Tornado", price="35.00", retail_price="35.00", pub=pub2)
+
+
+# username = UserInfo.objects.create(username="xiaoming", password="******")
+# username = UserInfo.objects.create(username="xiaohong", password="*******", gender="F")
+# # 创建一对一表关联
+# ExtendUserinfo.objects.create(user=username, signature="good good study,day day up", nickname="XH")
+
+
+# author1 = Author.objects.create(name="Luncy", email="123456@qq.com")
+# author2 = Author.objects.create(name="Tom", email="456789@163.com")
+# author1.books.add(Book.objects.get(id="1"))
+# author1.books.add(Book.objects.get(id="2"))
+# author1.books.add(Book.objects.get(id="3"))
+# author2.books.add(Book.objects.get(id="1"))
+# author2.books.add(Book.objects.get(id="4"))
+# author2.books.add(Book.objects.get(id="5"))
+# author2.books.add(Book.objects.get(id="3"))
+# author2.books.add(Book.objects.get(id="6"))
+# author1.books.add(Book.objects.get(id="6"))
 
 # 1) 抽象基类
 """
