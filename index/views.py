@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.shortcuts import render
 
 # Create your views here.
@@ -287,14 +288,16 @@ def test_to_reverse(request):
         reverse('index:detail_hello', current_app=request.resolver_match.namespace))  # 命令空间 可以满足不同的app 下 相同的path
     # return HttpResponseRedirect(reverse(test_url))  # 应用名:url 别名
 
+
 # 原生sql
 def BookName(request):
     books = Book.objects.raw("select * from index_book")  # 书写sql语句
     return render(request, "index/allbook.html", locals())
 
+
 # params  %s 传参防注入
 def authorname(request):
-    authors = Author.objects.raw("select id from index_author where name= %s",['Tom'])
+    authors = Author.objects.raw("select id from index_author where name= %s", ['Tom'])
     t = Template("""
         {% for author in authors %}
         <h1>  {{ author.name }} : {{ author.email}}</h1>
@@ -303,4 +306,22 @@ def authorname(request):
     html = t.render(Context({"authors": authors}))
     return HttpResponse(html)
 
+
 # 游标 cursor 对数据库进行增删改操作
+
+
+def test_annotate(request):
+    # 得到所有出版社的查询集合QuerySet
+    bk_set = Book.objects.values('price')
+    bk = Book.objects.get(id=1)
+    print('书名:', bk.title, '出版社是:', bk.pub.pubname)
+    # 根据出版社QuerySet查询分组，出版社和Count的分组聚合查询集合
+    bk_count_set = bk_set.annotate(myCount=Count('price'))  # 返回查询集合
+    for item in bk_count_set:  # 通过外键关联进行查询bk_set.pub.pubname
+        print("价格是:", item['price'], "同等价格书籍数量：", item['myCount'])
+    return HttpResponse('请在CMD命令行控制台查看结果')
+
+# SELECT `index_book`.`price`, COUNT(`index_book`.`price`) AS `myCount` FROM `index_book` GROUP BY `index_book`.`price` ORDER BY NULL
+#          (                  )
+# Book.objects.annotate(t=Max('price')).values('id','t')
+#  <QuerySet [{'id': 1, 't': Decimal('59.00')}, {'id': 2, 't': Decimal('25.00')}, {'id': 3, 't': Decimal('45.00')}, {'id': 4, 't': Decimal('65.00')}, {'id': 5, 't': Decimal('45.00')}]>#按照values提供的参数分别作为键和值。

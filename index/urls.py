@@ -26,5 +26,6 @@ urlpatterns = [
     # path('test/<int:year>/', views.year_test),
     path('allbook/', views.BookName),
     path('allauthor/', views.authorname),
+    path('annotate/', views.test_annotate),
 
 ]

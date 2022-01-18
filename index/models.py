@@ -239,4 +239,30 @@ Book.objects.filter(Q(retail_price__lt=55) | Q(pub_id='2'))  # 两个Q对象是�
 Book.objects.filter(Q(retail_price__lt=45) & ~Q(pub_id='2'))  # 条件1成立条件2不成立
 
 Book.objects.filter(Q(price__lte=100),title__icontains="p")#组合使用  icontains 忽略大小写
+
+# 1. 聚合查询的应用
+
+from django.db.models import *
+result =Book.objects.aggregate(myAvg=Avg('price'))
+print("平均价格是:", result['myAvg'])
+print("result=", result)
+#result= {'myAvg': Decimal('47.800000')}
+#求一共有多少本书
+result =Book.objects.aggregate(MyCulate=Count('title'))
+print("数据记录总个数是:", result['MyCulate'])
+print("result=", result)
+#result= {'MyCulate': 5}
+#传递多个聚合函数一起求值
+result=Book.objects.aggregate(l=Min("price"),m=Max("price"),n=Avg("retail_price"))
+print("result=",result)
+#result= {'l': Decimal('25.00'), 'm': Decimal('65.00'), 'n': Decimal('127.800000')}
+
+
+
+api 增删改查 CURD  
+ len(Book.objects.all())
+  Book.objects.all().count()
+   Book.objects.filter(title__exact="Python").exists()
+    Book.objects.filter(title__exact="Python").update(title="Python Django")
+    Book.objects.filter(title__exact="Tornado").delete()
 """
