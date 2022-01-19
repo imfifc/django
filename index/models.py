@@ -266,3 +266,98 @@ api 增删改查 CURD
     Book.objects.filter(title__exact="Python").update(title="Python Django")
     Book.objects.filter(title__exact="Tornado").delete()
 """
+
+"""
+# 多对一
+from index.models import *
+
+book1 = Book.objects.get(id=1)  # 正向查询）
+print(book1)
+pubname1 = PubName.objects.get(pubname="C语言中文网出版")  # 反向查询
+books = pubname1.book_set.all()
+for book in books:
+    print(book)
+
+# xxxfiled.book_set.all() #查询所有数据
+# xxxfiled.book_set.filter() #查询满足特定条件的数据
+# author.book_set.create(book) # 创建新书并联作用author
+# author.book_set.add(book)  #添加已有的书为当前作者author
+# author.book_set.clear()  #删除author所有并联的书
+"""
+ # 多对多
+
+# 通过Author(Luncy)查询对应的所有的Books
+# In [5]: from index.models import Book,Author
+# In [6]: author=Author.objects.get(id=1)
+# In [7]: author.books.all()
+# Out[7]: <QuerySet [<Book: Book object (1)>, <Book: Book object (2)>, <Book: Book object (3)>, <Book: Book object (4)>, <Book: Book object (5)>]>
+# #通过book(Python Django)的书籍查询其对应的所有的 Authors
+# In [8]: book=Book.objects.get(id=1)
+# In [9]: book.author_set.all()
+# Out[9]: <QuerySet [<Author: 作家：Luncy>, <Author: 作家：Tom>]>
+# In [10]: book.author_set.add(Author.objects.get(name="Xiaolong"))#为id=1书籍添加作者Xionglong
+
+'''
+# 一对一 反向查询
+In [1]: from index.models import UserInfo,ExtendUserinfo
+In [2]: user=UserInfo.objects.get(id=2)
+In [3]: user.extenduserinfo
+Out[3]: <ExtendUserinfo: ExtendUserinfo object (1)>
+'''
+
+# 跨关系查询
+'''
+#“c语言中网”出版了哪几本图书   跨关系查询
+from index.models import PubName,Book
+In [1]: Book.objects.filter(pub__pubname__contains="c语言中文网出版") #注意是双下画线哦
+Out[1]: <QuerySet [<Book: Book object (4)>, <Book: Book object (5)>]>
+
+#查询价格大于等于30的书籍
+In [2]: PubName.objects.filter(book__price__gte=60)
+Out[2]: <QuerySet [<PubName: PubName object (9)>]>
+'''
+
+"""sehll
+数据查询常用API
+
+Author.objects.filter(name__icontains='l')#icontains不对大小写敏感
+# 等同于SQL语句 
+select * from author where name like '%l%'
+# 查找价格在某一区间内的所有书籍
+Book.objects.filter(price__range=(20,45))
+# 等同于SQL语句
+select price where Book between 20 and 45;
+"""
+# books=Book.objects.all()
+# print(Book.objects.all().query)
+
+
+"""shell
+条件查询关键字	代表含义	SQL语句
+__gt	大于	select * from index_book where id>3;
+__gte	大于等于	select * from index_book where  ids>=3;
+__lt	小于	select * from index_book where  id<3;
+__lte	小于等于	select * from index_book where id<=3;
+__exact	等于	select * from index_book where id=4;
+__iexact	忽略大小写的等于	select * from index_book where name like 'flask';
+__in	是否在集合中	select * from index_book where id in (2,8,11)；
+__contains	是否包含...	select * from index_book where title like "%T%";
+__startswith	以...开头	select * from index_book where title like "P%";
+"""
+
+"""shell
+In [2]: Book.objects.exclude(price__lt=40)
+ Book.objects.order_by("-title","price")#按照title逆序排序后再按正序排列
+ 
+#  order_by 接收的参数为 ？时，这代表随机排序，但是这种方式会消耗资源性能没并且很慢，不建议使用。
+# order_by不接受参数的情况下，将不会有任何排序规则，默认的规则也不会有。
+
+Book.objects.reverse()
+Book.objects.values("id","title")#字典的键对应字段名，与其对应的值组成键值对
+Book.objects.values_list("id","title","price")
+Book.objects.all()[:3]
+Book.objects.all()[1:5:2]
+
+# 切片后得到的 QuerySet 不能再执行其他操作，比如字段排序、过滤等。
+# 利用 Python 的数组切片语法将 QuerySet 切成指定长度。这等价于 SQL 的 LIMIT 和 OFFSET 子句
+"""
