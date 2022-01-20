@@ -14,6 +14,9 @@ from django.db.models import F, Q
 class PubName(models.Model):
     pubname = models.CharField('名称', max_length=255, unique=True)
 
+    def __str__(self):
+        return f"出版社: {self.pubname}"
+
 
 # Create your models here.
 class Book(models.Model):  # 创建 book 表
@@ -52,6 +55,9 @@ class UserInfo(models.Model):  # 创建用户信息表
     )
     gender = models.CharField(max_length=10, choices=choices, default='M')
 
+    def __str__(self):
+        return '用户信息：%s' % (self.username)
+
 
 # 新建一对一关用户信息表拓展表,添加完成后执行数据库迁移同步操作
 class ExtendUserinfo(models.Model):
@@ -59,7 +65,8 @@ class ExtendUserinfo(models.Model):
     signature = models.CharField(max_length=255, verbose_name='用户签名', help_text='自建签名')
     nickname = models.CharField(max_length=255, verbose_name='昵称', help_text='自建昵称')
 
-
+    def __str__(self):
+        return f" {self.user}，签名:{self.signature}，昵称:{self.nickname}"
 # python .\manage.py makemigrations
 # python .\manage.py migrate
 # python .\manage.py shell
@@ -216,7 +223,7 @@ with connection.cursor() as cur:
     # 调用游标对象的execute方法，更新author的名字
     cur.execute('update index_author set name="Jack"  where id=4;')
     # 删除id为3的一条author记录
-    cur.execute('delete from index_author where id=3;')
+    # cur.execute('delete from index_author where id=3;')
 
 # 给Book所有实例价格（retail_price）涨价20元
 # Book.objects.all().update(retail_price=F('retail_price') + 10)  # 获取该列所有值并加20
@@ -284,7 +291,7 @@ for book in books:
 # author.book_set.add(book)  #添加已有的书为当前作者author
 # author.book_set.clear()  #删除author所有并联的书
 """
- # 多对多
+# 多对多
 
 # 通过Author(Luncy)查询对应的所有的Books
 # In [5]: from index.models import Book,Author
@@ -317,7 +324,7 @@ In [2]: PubName.objects.filter(book__price__gte=60)
 Out[2]: <QuerySet [<PubName: PubName object (9)>]>
 '''
 
-"""sehll
+"""shell
 数据查询常用API
 
 Author.objects.filter(name__icontains='l')#icontains不对大小写敏感
