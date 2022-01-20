@@ -34,7 +34,6 @@ class Book(models.Model):  # 创建 book 表
         return "title:%s pub:%s price:%s" % (self.title, self.pub, self.price)
 
 
-
 class Author(models.Model):  # 创建作者表
     name = models.CharField(max_length=30, verbose_name='姓名')
     email = models.EmailField(verbose_name='邮箱')

@@ -8,6 +8,7 @@ from django.shortcuts import render  # 导入render 方法
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Template, Context  # 调用template、以及上下文处理器方法
 from django.urls import reverse
+from django.views import View
 
 from index.models import Book, Author, UserInfo
 
@@ -321,7 +322,38 @@ def test_annotate(request):
         print("价格是:", item['price'], "同等价格书籍数量：", item['myCount'])
     return HttpResponse('请在CMD命令行控制台查看结果')
 
+
 # SELECT `index_book`.`price`, COUNT(`index_book`.`price`) AS `myCount` FROM `index_book` GROUP BY `index_book`.`price` ORDER BY NULL
 #          (                  )
 # Book.objects.annotate(t=Max('price')).values('id','t')
 #  <QuerySet [{'id': 1, 't': Decimal('59.00')}, {'id': 2, 't': Decimal('25.00')}, {'id': 3, 't': Decimal('45.00')}, {'id': 4, 't': Decimal('65.00')}, {'id': 5, 't': Decimal('45.00')}]>#按照values提供的参数分别作为键和值。
+
+# 使用FBV方式
+def login_fbv(request):
+    if request.method == "GET":
+        return HttpResponse("登录成功")
+    elif request.method == "POST":
+        pass
+
+
+# 使用CBV方式
+class LoginView(View):  # 需要继承自View类
+    username = 'xiaoli'
+
+    def get(self, request):
+        return HttpResponse("登录成功")
+
+    def post(self, request):
+        pass
+
+
+class LoginViewChild(LoginView):
+    # 继承后重写类属性
+    username = 'xiaowang'
+
+"""
+#第二种方法也可以
+urlpatterns = [
+   path(r'logincbv/', LoginView.as_view(name="xiaowang"))
+]
+"""

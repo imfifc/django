@@ -1,5 +1,6 @@
 from django.urls import path, re_path
 from index import views
+from index.views import LoginView
 
 """
 str，匹配除了路径分隔符（/）之外的非空字符串，这是默认的形式；
@@ -27,5 +28,7 @@ urlpatterns = [
     path('allbook/', views.BookName),
     path('allauthor/', views.authorname),
     path('annotate/', views.test_annotate),
+    path('logincbv/', LoginView.as_view(), name='home'),
+# 使用as_view()方法创建类实例
 
 ]
