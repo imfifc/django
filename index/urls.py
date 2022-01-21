@@ -30,5 +30,9 @@ urlpatterns = [
     path('annotate/', views.test_annotate),
     path('logincbv/', LoginView.as_view(), name='home'),
 # 使用as_view()方法创建类实例
+# http://127.0.0.1:8000/admin/index/book/
+    path('login/', views.login),   # ? 为啥2级路由下 响应不行 http://127.0.0.1:8000/index/login/   --- http://127.0.0.1:8000/login/
 
+    path('set_cookie/', views.set_cookie_view),
+    path('get_cookie/', views.get_cookie_view),
 ]

@@ -1,4 +1,5 @@
 from django.db.models import Count
+from django import forms
 from django.shortcuts import render
 
 # Create your views here.
@@ -351,9 +352,47 @@ class LoginViewChild(LoginView):
     # 继承后重写类属性
     username = 'xiaowang'
 
+
 """
 #第二种方法也可以
 urlpatterns = [
    path(r'logincbv/', LoginView.as_view(name="xiaowang"))
 ]
 """
+
+
+# 第一步index/views.py 创建Form对象。
+class LoginForm(forms.Form):  # 继承自Form类，
+    user_name = forms.CharField(label="用户名", min_length=6, max_length=12)  # 新建表单字段
+    user_password = forms.CharField(label="用户密码", min_length=8)
+
+
+# 第二步围绕form对象完成表单。
+def login(request):  # 定义登录处理函数login()
+    # print(111,request,type(request),"dir_request",dir(request))
+    # print("222 r.post",type(request.POST),dir(request.POST))
+    if request.method == "POST":  # request是 HttpRequest的对象，利用它的的method属性，判断请求方法。
+        form = LoginForm(request.POST)  # 实例化对象，post提交数据是QuerySet类型的字典，GET方法与其一样。
+        # print("dir (form)",dir(form))
+        # print("form",form)  # html表单
+        if form.is_valid():  # 提供验证判断是否有效，成立则返回是Ture
+            print(HttpResponse)
+            return HttpResponse("登录成功")
+    else:
+        form = LoginForm()
+    # print("local()",locals())  # {'request': <WSGIRequest: GET '/login/'>, 'form': <LoginForm bound=False, valid=Unknown, fields=(user_name;user_password)>}
+
+    return render(request, "index/login.html", locals())
+
+
+# 设置添加cookie
+def set_cookie_view(request):
+    resp = HttpResponse()
+    resp.set_cookie('username', 'jack', 3600)
+    return resp
+
+
+# 得到cookie的值使用get方法
+def get_cookie_view(request):
+    value = request.COOKIES.get('username')
+    return HttpResponse('--MY COOKIE is--%s' % value)

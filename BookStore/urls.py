@@ -39,5 +39,10 @@ urlpatterns = [
     path('cycle_lable/', views.cycle_lable),
     path('user_define_filter/', views.user_define_filter),
 
-    path('index/', include('index.urls', namespace='first')),
+    # path('index/', include('index.urls', namespace='first')),
+    path('index/', include('index.urls')),
+    path('user/', include('user.urls')),
+
+    # path('login/', views.login),
+
 ]
