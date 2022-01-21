@@ -1,3 +1,6 @@
 {% for book in books %}
 <p>{{book.title}}>>{{ book.price }} >>{{ book.retail_price }}</p>
 {% endfor %}
+
+{#<a href="/user/logout/">点击退出</a>   等价于  #}
+<a href="{% url 'logout_1' %}">点击退出</a>

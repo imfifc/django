@@ -62,8 +62,14 @@ def logout_view(request):
     # 删除session
     if 'username' in request.session:
         del request.session['username']
-    resp = HttpResponseRedirect('/user/index')
+    resp = HttpResponseRedirect('/user/index/')
     # 删除cookie
     if 'username' in request.COOKIES:
         resp.delete_cookie('username')
     return resp
+
+def index(request):
+    # user = request.session.values()
+    user = request.COOKIES.get('sessionid')
+
+    return render(request, "user/index.html", locals())
