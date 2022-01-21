@@ -12,7 +12,7 @@ def login_view(request):
     # 处理GET请求
     if request.method == 'GET':
         # 1, 首先检查session，判断用户是否第一次登录，如果不是，则直接重定向到首页
-        print(111,dir(request.session))
+        print(111, dir(request.session))
         if 'username' in request.session:  # request.session 类字典对象
             return HttpResponseRedirect('/index/allbook')
         # 2, 然后检查cookie，是否保存了用户登录信息
@@ -46,15 +46,15 @@ def login_view(request):
         # 返回值是个数组，并且用户名具备唯一索引，当前用户是该数组中第一个元素
         users = users[0]
         request.session['username'] = username
-        print("session",request.session.keys(),request.session.values())  # dict_keys(['username']) ,dict_values(['hh'])
+        print("session", request.session.keys(),
+              request.session.values())  # dict_keys(['username']) ,dict_values(['hh'])
         response = HttpResponseRedirect('/index/allbook/')
         # 检查post 提交的所有键中是否存在 isSaved 键
-        print("request.POST.keys()",request.POST.keys())
+        print("request.POST.keys()", request.POST.keys())
         if 'isSaved' in request.POST.keys():
             # 若存在则说明用户选择了记住用户名功能，执行以下语句设置cookie的过期时间
             response.set_cookie('username', username, 60 * 60 * 24 * 7)
         return response
-
 
 
 def logout_view(request):
@@ -68,8 +68,21 @@ def logout_view(request):
         resp.delete_cookie('username')
     return resp
 
+
 def index(request):
     # user = request.session.values()
     user = request.COOKIES.get('sessionid')
 
     return render(request, "user/index.html", locals())
+
+
+"""
+#保存session的值到服务器
+request.session['KEY'] = VALUE
+#获取session的值
+VALUE = request.session['KEY']
+VALUE = request.session.get('KEY', 缺省值)
+#删除session的值
+del request.session['KEY']
+request.session.flush()#删除所有session
+"""

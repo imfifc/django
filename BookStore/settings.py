@@ -129,3 +129,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# 默认值2周的时间
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7 * 2
+# 开启关掉浏览器立即失效模式
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
