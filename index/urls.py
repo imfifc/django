@@ -35,4 +35,7 @@ urlpatterns = [
 
     path('set_cookie/', views.set_cookie_view),
     path('get_cookie/', views.get_cookie_view),
+
+    path('search_ttile_form/', views.search_ttile_form),
+    path('search_title/', views.search_title),
 ]

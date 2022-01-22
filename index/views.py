@@ -396,3 +396,20 @@ def set_cookie_view(request):
 def get_cookie_view(request):
     value = request.COOKIES.get('username')
     return HttpResponse('--MY COOKIE is--%s' % value)
+
+
+# 用来显示查询页面
+def search_ttile_form(request):
+    return render(request, 'index/search_title.html')
+
+
+# 用来显示查询结果
+def search_title(request):
+    # 查询title忽略大小写,所得类型为QuerySet
+    if not request.GET.get('title', ''):
+        errors = ['输入的书名是无效']  # 在这里使用列表的原因，是因为随着表单功能的修改可能需要传递多个字段，这时可能会有多个不同的错误信息需要展示。
+        return render(request, 'index/search_title.html', locals())
+
+    title = Book.objects.filter(title__icontains=request.GET['title'])
+    title = list(title.all().values())
+    return render(request, 'index/book_list.html', locals())
