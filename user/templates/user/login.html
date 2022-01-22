@@ -11,7 +11,8 @@
 </head>
 <body>
 <form action="/user/login/" method="post">
-    <!--传统的html登录表单-->
+    <!--传统的html登录表单, 防止跨域请求失败 加csrf-->
+     {% csrf_token %}
     <p>
         用户名： <input type="text" name="username" value="{{ username }}">
         <span> {{ error }}</span>
