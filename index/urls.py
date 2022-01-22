@@ -25,7 +25,7 @@ urlpatterns = [
     # re_path('test/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/(?P<slug>[^/]+)/', views.article_test),
     # re_path(r'^test/(?P<year>[0-9]{4})/$', views.year_test),
     # path('test/<int:year>/', views.year_test),
-    path('allbook/', views.BookName),
+    path('all_book/', views.BookName),
     path('allauthor/', views.authorname),
     path('annotate/', views.test_annotate),
     path('logincbv/', LoginView.as_view(), name='home'),
@@ -38,4 +38,8 @@ urlpatterns = [
 
     path('search_ttile_form/', views.search_ttile_form),
     path('search_title/', views.search_title),
+    path('book_table/', views.book_table),
+    path('add_book/', views.add_book),
+    # path('updata_book/', views.updata_book),
+    # path('delete_book/', views.delete_book),
 ]
