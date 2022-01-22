@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.views import View
 
 from index.models import Book, Author, UserInfo, PubName
+from index.forms import TitleSearch  # 引入forms.py中定义的TitleSearch类
 
 
 def test_html(request):
@@ -448,10 +449,32 @@ def add_book(request):
         if old_book:
             return HttpResponse('你输入的书籍系统已经存在 !')
         try:
-            pub1 = PubName.objects.get_or_create(pubname=str(pub))
-            print(pub1[0])
+            pub1 = PubName.objects.get_or_create(pubname=str(pub))  # 不存在就创建
+            # print(pub1[0])
             Book.objects.create(title=title, price=price, retail_price=retail_price, pub=pub1[0])
         except Exception as e:
             print('Add ErrorReason is %s' % e)
         return HttpResponseRedirect('/index/book_table/')
     return HttpResponse('请使用正确Http请求方法 !')
+
+
+def search_ttile_form2(request):
+    return render(request, 'index/search_title2.html', context={'form': TitleSearch()})  # 实例化表单对象
+
+
+def search_title2(request):
+    form = TitleSearch(request.GET)
+    if form.is_valid():  # 第一步验证成功
+        print('title',form.cleaned_data["title"])
+        books = Book.objects.filter(title__icontains=form.cleaned_data["title"])  # 调用cleaned_data属性获取清理后的数据
+        if not books:
+            return HttpResponseRedirect("/index/book_not_list/")
+        return render(request, 'index/book_list2.html', locals())
+        # 查看返回结果
+    else:
+        # 将带有错误信息的表单实例作为上下文传递到需要渲染的模板中
+        return render(request, 'index/search_title2.html', {'form': form})
+
+
+def book_not_list(request):
+    return render(request, "index/book_not_list.html")
