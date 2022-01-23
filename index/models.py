@@ -67,6 +67,8 @@ class ExtendUserinfo(models.Model):
 
     def __str__(self):
         return f" {self.user}，签名:{self.signature}，昵称:{self.nickname}"
+
+
 # python .\manage.py makemigrations
 # python .\manage.py migrate
 # python .\manage.py shell
@@ -368,3 +370,11 @@ Book.objects.all()[1:5:2]
 # 切片后得到的 QuerySet 不能再执行其他操作，比如字段排序、过滤等。
 # 利用 Python 的数组切片语法将 QuerySet 切成指定长度。这等价于 SQL 的 LIMIT 和 OFFSET 子句
 """
+
+from django.conf import settings
+from django.db import models
+
+
+class Article(models.Model):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
