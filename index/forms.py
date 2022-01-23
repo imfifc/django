@@ -1,5 +1,8 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.forms import ComboField, CharField, EmailField
+
+from index.models import Book
 
 
 class TitleSearch(forms.Form):
@@ -12,6 +15,7 @@ class TitleSearch(forms.Form):
     # title.clean('')  # “清理”和校验 对数据进行验证和测试。
     # email = forms.EmailField(label="邮箱", widget=forms.EmailField)
     # email.clean('123@qq.com')
+
 
 """"
 t1 = TitleSearch({"title": "python", 'user': "11@qq.com"}, initial={'title': 'Django', 'user': "22@qq.com"})
@@ -118,6 +122,7 @@ class TestForm(forms.Form):
     b = forms.CharField(max_length=20)  # 最大长度为20
     c = forms.IntegerField(max_value=10, min_value=1)  # 最大值为10最小值1
 
+
 """
 pl = TestForm({"b": "django", "c": 40})
 pl.is_valid()
@@ -128,4 +133,87 @@ print(pl) # 生成html
 
 print(pl['b'])
 <input type="text" name="b" value="django" maxlength="20" required id="id_b">
+"""
+
+
+# 实现自定义字段
+# 功能是输入书籍的 id 后，可以获取 Book 的实例对象
+class BookField(forms.Field):
+    default_error_message = {
+        'invalid': 'Enter a whole number',
+        'not_exist': 'Book Not Exist',
+    }
+
+    def to_python(self, num):
+        try:
+            num = int(str(num).strip())
+            return Book.objects.get(id=num)
+        except (ValueError, TypeError):
+            raise ValidationError(self.error_messages['invalid'], code='invalid')
+        except Exception:
+            raise ValidationError(self.error_messages['not_exist'], code='not_exist')
+
+
+# 继承基类 Field 去自定义表单字段可能考虑比较多的问题，所以通常自定义 Field 都会继承自 CharField 或者 IntergerField 等内置字段
+class AddstrField(forms.CharField):
+    def clean(self, value):
+        return 'C语言中文网 %s' % super().clean(value)
+
+
+"""
+x= AddstrField()
+x.clean('hahah')
+'C语言中文网 hahah'
+"""
+
+
+# 自定义一个验证偶数的 验证器 ，否则抛出异常
+def even_validator(value):
+    if value % 2 != 0:
+        raise ValidationError('%d is not a even number' % value)
+
+
+# 编写 EvenField字段，只可以接受偶数，否则抛出异常ValidationError
+class EvenField(forms.IntegerField):
+    # 使用构造函数__init__ 对其进行初始化，并添加验证器规则
+    def __init__(self, **kwargs):
+        super().__init__(validators=[even_validator], **kwargs)
+
+
+"""
+x=EvenField()
+x.clean(2)
+2
+"""
+
+
+# 实现自定义校验规则
+# 如果只需要对一些表单字段做额外的检验，可以将检验逻辑编写在定义的 Form 类中，以类方法形式存在。
+# 表单系统会自动查找以 clean_ 开头，以字段名结尾的方法，它会在验证字段合法性的过程中被调用
+
+class RegForm(forms.Form):
+    name = forms.CharField(label='用户名')
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        if len(name) < 6:
+            raise forms.ValidationError("你注册的用户名字符太短了")
+        return name
+
+"""
+x = RegForm({'name':"yuanyaun"})
+x.is_valid()
+True
+x.cleaned_data
+{'name': 'yuanyaun'}
+
+x = RegForm({'name':"yuan"})
+x.is_valid()
+False
+x.cleaned_data
+{}
+x.errors
+{'name': ['你注册的用户名字符太短了']}
+x['name'].errors
+['你注册的用户名字符太短了']
 """
