@@ -514,6 +514,7 @@ def delete_book(request, book_id):
     try:
         book = Book.objects.get(id=book_id)
     except Exception as e:
+        print('get查询出现了异常没找到数据', e)
         return HttpResponse('--没有找到任何书籍 可以删除---')
     if request.method == "GET":
         return render(request, 'index/delete_book.html', locals())
