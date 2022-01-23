@@ -465,7 +465,7 @@ def search_ttile_form2(request):
 def search_title2(request):
     form = TitleSearch(request.GET)
     if form.is_valid():  # 第一步验证成功
-        print('title',form.cleaned_data["title"])
+        print('title', form.cleaned_data["title"])
         books = Book.objects.filter(title__icontains=form.cleaned_data["title"])  # 调用cleaned_data属性获取清理后的数据
         if not books:
             return HttpResponseRedirect("/index/book_not_list/")
@@ -478,3 +478,32 @@ def search_title2(request):
 
 def book_not_list(request):
     return render(request, "index/book_not_list.html")
+
+
+def update_book(request, book_id):
+    # 用 book_id给每个书籍加上标记
+    # 将其作为查找书籍的参数
+    book_id = int(book_id)
+    try:
+        book = Book.objects.get(id=book_id)
+    except Exception as e:
+        return HttpResponse('--没有找到任何书籍---')
+    if request.method == 'GET':
+        print("get", locals())
+        return render(request, 'index/update_book.html', locals())  # 同一个页面可以接受post get 请求
+    elif request.method == 'POST':
+        price = request.POST.get('price')
+        retail_price = request.POST.get('retail_price')
+        if not price or not retail_price:
+            return HttpResponse('请输入更改后的零售价或市场价！')
+        price = float(price)
+        retail_price = float(retail_price)
+        # 修改对象属性值
+        book.price = price
+        book.retail_price = retail_price
+        print(111, book, book.price, book.retail_price)
+        # 存储更新后的状态
+        book.save()
+        # 重定向至127.0.0.1:8000/index/all_book/
+        return HttpResponseRedirect('/index/book_table/')  # 注意 全路径 写好，不然发生错误
+    return HttpResponse("书籍信息更新功能")

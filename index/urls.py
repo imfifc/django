@@ -45,6 +45,6 @@ urlpatterns = [
 
     path('book_table/', views.book_table),
     path('add_book/', views.add_book),
-    # path('updata_book/', views.updata_book),
+    path('update_book/<int:book_id>/', views.update_book)
     # path('delete_book/', views.delete_book),
 ]
