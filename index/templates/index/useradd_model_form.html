@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户添加</title>
+</head>
+<body>
+{#由于指定了 POST 请求类型，需要 CSRF 保护机制，所以添加了 {%csrf_token%} 模板标签；#}
+{#action 没有设定 URL 的意思是将表单提交到与当前页面相同的 URL#}
+<form action="" method="post">
+    {% csrf_token %}
+    <table>
+        {{ form }}
+    </table>
+    <input type="submit" value="提交">
+</form>
+</body>
+</html>

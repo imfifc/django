@@ -1,8 +1,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.forms import ComboField, CharField, EmailField
+from django.forms import ComboField, CharField, EmailField, widgets
 
-from index.models import Book
+from index.models import Book, UserInfo
 
 
 class TitleSearch(forms.Form):
@@ -200,6 +200,7 @@ class RegForm(forms.Form):
             raise forms.ValidationError("你注册的用户名字符太短了")
         return name
 
+
 """
 x = RegForm({'name':"yuanyaun"})
 x.is_valid()
@@ -217,3 +218,41 @@ x.errors
 x['name'].errors
 ['你注册的用户名字符太短了']
 """
+
+
+class BookModelForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        labels = {'title': '标题',
+                  'price': '零售价格'}  # 表单的名称首先默认使用 Model字段设置的 verbose_name，但是若 Model 字段没有设置该字段选项，则就可以使用 lables 设置的字段名
+        exclude = ('retail_price',)
+        help_texts = {"title": "书籍的名称", "price": "书籍价格"}
+        field_calss = {"title": forms.URLField}  # 对于 title 字段，ModelForm 会将它映射为 fields.CharField 类型。可以根据需要改变这种默认行为
+        error_messages = ""  # 用来指定表单字段校验规则，即验证失败时的报错信息。
+        # 使用 is_valid 方法来校验字段值的合法性和通过 cleaned_data 属性获取清理后的字段值，另外， ModelForm 也会校验模型字段中设置的限制条件，
+        # 比如在 Model 模型的字段中添加了 unique 选项，那么 is_valid 则会查询数据库确认是否存在重复数据。
+
+
+# save 场景
+"""
+#  1) 通过页面 Post 提交过来的数据，通过 form 接收 ，然后直接保存到数据库，同时能够产生对应的 models 的一个新对象
+f = BookModelForm(request.POST)
+new_book = f.save()
+
+# 2) 从数据库中取出 models 的对象，然后通过 form 参数 instance 方法能够实例化该 form，这个主要用来查看具体的信息
+a = Book.objects.get(id=1)
+f = BookModelForm(instance=a)
+f.save()
+
+# 3) 如果既有 Post 又有 instance，则以 Post 提交数据为主，这个主要用来修改具体的信息。如下所示：
+a = Book.objects.get(id=1)
+f = BookModelForm(request.POST, instance=a)
+f.save()
+"""
+
+
+class UserModelForm(forms.ModelForm):
+    class Meta:
+        model = UserInfo
+        fields = "__all__"
+        widgets = {'password': widgets.PasswordInput()}  # 控件

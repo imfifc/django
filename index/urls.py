@@ -48,4 +48,5 @@ urlpatterns = [
     path('update_book/<int:book_id>/', views.update_book),
     path('delete_book/<int:book_id>/', views.delete_book),
     # path('delete_book/', views.delete_book),
+    path('user_add_form/', views.user_add_form),
 ]

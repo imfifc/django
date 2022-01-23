@@ -12,7 +12,7 @@ from django.urls import reverse
 from django.views import View
 
 from index.models import Book, Author, UserInfo, PubName
-from index.forms import TitleSearch  # 引入forms.py中定义的TitleSearch类
+from index.forms import TitleSearch, UserModelForm  # 引入forms.py中定义的TitleSearch类
 
 
 def test_html(request):
@@ -522,3 +522,31 @@ def delete_book(request, book_id):
         book.delete()
         return HttpResponseRedirect('/index/book_table/')  # 注意 全路径 写好，不然发生错误
     return HttpResponse("书籍信息删除功能")
+
+
+def user_add_form(request):
+    if request.method == "POST":
+        user = UserModelForm(request.POST)  # user 表单数据
+        if user.is_valid():
+            # print(111, user.cleaned_data)  # 111 {'username': 'admin', 'password': 'admin', 'gender': 'M'}
+            user = UserInfo.objects.create(username=user.cleaned_data['username'],
+                                           password=user.cleaned_data["password"],
+                                           gender=user.cleaned_data['gender'])
+            # user_add.html只需要接收变量{{ user }}即可
+            return render(request, 'index/user_add.html', locals())
+        else:
+            return render(request, 'index/useradd_model_form.html', context={'form': user})  # 给出报错信息
+    else:
+        return render(request, 'index/useradd_model_form.html', {'form': UserModelForm()})
+
+
+def user_add_form2(request):
+    if request.method == "POST":
+        user = UserModelForm(request.POST)  # user 表单数据
+        if user.is_valid():
+            # print(111, user.cleaned_data)  # 111 {'username': 'admin', 'password': 'admin', 'gender': 'M'}
+            user = user.save(commit=False)  # save 方法接受一个 commit 参数，默认为 True，可以实现 Model 实例的保存以及多对多关系数据的保存
+            user.name = request.user
+            user.save()
+            # user_add.html只需要接收变量{{ user }}即可
+            return render(request, 'index/user_add.html', locals())
