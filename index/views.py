@@ -507,3 +507,17 @@ def update_book(request, book_id):
         # 重定向至127.0.0.1:8000/index/all_book/
         return HttpResponseRedirect('/index/book_table/')  # 注意 全路径 写好，不然发生错误
     return HttpResponse("书籍信息更新功能")
+
+
+def delete_book(request, book_id):
+    book_id = int(book_id)
+    try:
+        book = Book.objects.get(id=book_id)
+    except Exception as e:
+        return HttpResponse('--没有找到任何书籍 可以删除---')
+    if request.method == "GET":
+        return render(request, 'index/delete_book.html', locals())
+    elif request.method == "POST":
+        book.delete()
+        return HttpResponseRedirect('/index/book_table/')  # 注意 全路径 写好，不然发生错误
+    return HttpResponse("书籍信息删除功能")
