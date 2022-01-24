@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.db.models import Count
 from django import forms
 from django.shortcuts import render
@@ -550,3 +551,12 @@ def user_add_form2(request):
             user.save()
             # user_add.html只需要接收变量{{ user }}即可
             return render(request, 'index/user_add.html', locals())
+
+
+def page_test(request):
+    # 测试分页功能
+    books = Book.objects.all()
+    paginator = Paginator(books, 2)
+    num_p = request.GET.get('page', 1)  # 以page为键得到默认的页面1
+    page = paginator.page(int(num_p))
+    return render(request, 'index/page_test.html', locals())
