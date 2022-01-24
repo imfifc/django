@@ -59,6 +59,24 @@ class UserInfo(models.Model):  # 创建用户信息表
         return '用户信息：%s' % (self.username)
 
 
+'''自定义添加权限 方法2 ；方法1  class Meta
+# 由于 codename 与 ContentType 之间具有 together_unique 限制即联合唯一性限制，所以不能与当前权限的 codename 存在重复。
+
+from index.models import UserInfo
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
+content_type = ContentType.objects.get_for_model(UserInfo)
+content_type
+<ContentType: index | user info>
+permission1 = Permission.objects.create(codename = 'publish_book',name = 'Can publish books',content_type = content_type)
+permission1
+<Permission: index | user info | Can publish books>
+permission2 = Permission.objects.create(codename = 'comment_book',name = 'Can comment books',content_type = content_type)
+permission2
+<Permission: index | user info | Can comment books>
+'''
+
+
 # 新建一对一关用户信息表拓展表,添加完成后执行数据库迁移同步操作
 class ExtendUserinfo(models.Model):
     user = models.OneToOneField(to=UserInfo, on_delete=models.CASCADE)  # ::一对一
@@ -376,5 +394,5 @@ from django.db import models
 
 
 class Article(models.Model):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
