@@ -5,6 +5,7 @@ from django.forms import ComboField, CharField, EmailField, widgets
 from index.models import Book, UserInfo
 
 
+# 可以查看form源码 metaclass=DeclarativeFieldsMetaclass，BaseForm 中定义了生成 HTML 与字段值校验的方法，而 DeclarativeFieldsMetaclass 则定义了创建 Form 对象的过程
 class TitleSearch(forms.Form):
     error_css_class = "error"  # 实现错误信息添加CSS样式
     required_css_class = "required"
@@ -26,7 +27,7 @@ t1.fields.values()
 t1.is_valid()
 t1.fields['title']
 # t1.cleaned_data # is_valid() 方法对输入数据的合法性进行验证，然后再使用该属性得到干净的数据，若验证时存在不合法的数据，cleaned_data 方法将会自动清洗掉不它们，只显示合法的数据。
-print(t1)  # 显示html as_table
+print(t1)  # 显示html as_table  体来说它的主要作用就是解析表单对象中定义的各个 Field，给每个 Field 生成表单 HTML，最后对每个字段的 HTML 拼接得到完整的表单。
 t1.as_p()
 t1.as_ul()
 # 通过label_tag(attrs={})设置属性名
