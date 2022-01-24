@@ -136,3 +136,9 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 # 格式： "<django_app名>.<model名>"
 # AUTH_USER_MODEL = "appname.NewUser"
+
+# 自定义认证后端    在不使用用户名的情况下，还可以使用邮箱与正确的密码进行认证。
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'user.backends.EmailBackend',
+]
