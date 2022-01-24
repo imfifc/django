@@ -142,3 +142,5 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'user.backends.EmailBackend',
 ]
+
+LOGIN_REDIRECT_URL = "/index/update_book/"

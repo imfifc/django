@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>auth用户认证</title>
+</head>
+<body>
+{% if user.is_authenticated %}
+    <h1> Hello {{ user.username }} Login </h1>
+{% else %}
+    <h1>Visitor Login</h1>
+{% endif %}
+
+
+{% if perms.index %}
+    <p> {{ user.username }}拥有 user应用的权限</p>>
+    {% if perms.index.add_book %}
+        <p>你拥有书籍添加的功能</p>
+    {% endif %}
+    {% if perms.index.change_book %}
+        <p>你有用书籍删除的功能</p>
+    {% endif %}
+{% else %}
+    <p>关于index应用的权限你一个也没有拥有</p>
+{% endif %}
+
+</body>
+</html>

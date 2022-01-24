@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate
 from django.core.paginator import Paginator
 from django.db.models import Count
 from django import forms
@@ -340,7 +341,7 @@ def login_fbv(request):
 
 
 # 使用CBV方式
-class LoginView(View):  # 需要继承自View类
+class LoginView1(View):  # 需要继承自View类
     username = 'xiaoli'
 
     def get(self, request):
@@ -350,7 +351,7 @@ class LoginView(View):  # 需要继承自View类
         pass
 
 
-class LoginViewChild(LoginView):
+class LoginViewChild(LoginView1):
     # 继承后重写类属性
     username = 'xiaowang'
 
@@ -560,3 +561,16 @@ def page_test(request):
     num_p = request.GET.get('page', 1)  # 以page为键得到默认的页面1
     page = paginator.page(int(num_p))
     return render(request, 'index/page_test.html', locals())
+
+
+def login_views(request):
+    username = request.POST("username")
+    password = request.POST("password")
+    # 调用 authenticate对user进行认证
+    user = authenticate(username=username, password=password)
+    if user:
+        # 调用auth的login api
+        login(request, user)
+        pass
+    else:
+        pass

@@ -1,6 +1,6 @@
 from django.urls import path, re_path
 from index import views
-from index.views import LoginView
+from index.views import LoginView1
 
 """
 str，匹配除了路径分隔符（/）之外的非空字符串，这是默认的形式；
@@ -28,7 +28,7 @@ urlpatterns = [
     path('all_book/', views.BookName),
     path('allauthor/', views.authorname),
     path('annotate/', views.test_annotate),
-    path('logincbv/', LoginView.as_view(), name='home'),
+    path('logincbv/', LoginView1.as_view(), name='home'),
     # 使用as_view()方法创建类实例
     # http://127.0.0.1:8000/admin/index/book/
     path('login/', views.login),  # ? 为啥2级路由下 响应不行 http://127.0.0.1:8000/index/login/   --- http://127.0.0.1:8000/login/
