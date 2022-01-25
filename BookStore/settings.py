@@ -145,3 +145,4 @@ AUTHENTICATION_BACKENDS = [
 
 LOGIN_REDIRECT_URL = "/index/all_book/"
 LOGIN_URL = "/login/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'index/static/files')

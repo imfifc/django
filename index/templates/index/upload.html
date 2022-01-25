@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文件上传</title>
+</head>
+<body>
+<form method="post" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="myfile">
+    <input type="submit" value="提交">
+</form>
+
+<a href={% url 'index:csv_1'  %}>下载CSV</a>
+</body>
+</html>
+
+
+{#在 Form 表单中 enctype 有两个属性值，另外一个是默认即 application/x-www-form-urlencoded ，它是表单默认的提交数据的方式，而文件提交我们就需要使用multipart/form-data。#}
+
+{% comment %}
+3) 实现多文件上传
+如上所示是实现了单一的文件上传，如果想实现一次性选择多个文件，那么就需要使用如下格式：
+<input type="file" name="myfiles" multiple="">
+
+就可以实现多文件同时上传了。这里需要注意的是由于 request.FILES['myfile'] 只能够得到最后一个，所以我们要使用下面的方法：
+files = request.FILES.getlist('myfiles')
+然后通过循环获得 file 文件流对象，最后实现多文件上传，大家可以自己 to do 一下。
+
+
+{% endcomment %}

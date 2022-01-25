@@ -1,3 +1,6 @@
+import csv
+import os
+
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
@@ -14,6 +17,7 @@ from django.template import Template, Context  # 调用template、以及上下�
 from django.urls import reverse
 from django.views import View
 
+from BookStore import settings
 from index.models import Book, Author, UserInfo, PubName
 from index.forms import TitleSearch, UserModelForm  # 引入forms.py中定义的TitleSearch类
 
@@ -580,3 +584,39 @@ def login_views(request):
         pass
     else:
         pass
+
+
+def upload(request):
+    if request.method == 'GET':
+        return render(request, 'index/upload.html')
+    elif request.method == 'POST':
+        # 使用request.FILES['myfile']获得文件流对象file
+        file = request.FILES['myfile']
+        # 文件储存路径，应用settings中的配置，file.name获取文件名
+        filename = os.path.join(settings.MEDIA_ROOT, file.name)
+        print(filename)
+        # 写文件
+        with open(filename, 'wb') as f:
+            # file.file 获取文件字节流数据
+            data = file.file.read()
+            f.write(data)
+            return HttpResponse('成功保存了 %s 文件' % file.name)
+
+
+# 生成csv文本导出
+def test_csv(request):
+    # 生成csv文本
+    # 生成response的content-type头
+    res = HttpResponse(content_type='text/csv')
+    # 固定格式,添加 content-Disposition头，设置以附件方式下载，并给文件添加默认文件名
+    res['Content-Disposition'] = 'attachment;filename="allUser.csv"'
+    # 获取数据库中数据
+    users = UserInfo.objects.all()
+    # 生成writer的写对象
+    writer = csv.writer(res)
+    # 写csv表头，即想要展示字段名
+    writer.writerow(['username', 'gender'])
+    # 写具体数据
+    for user in users:
+        writer.writerow([user.username, user.gender])
+    return res

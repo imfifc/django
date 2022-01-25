@@ -31,7 +31,8 @@ urlpatterns = [
     path('logincbv/', LoginView1.as_view(), name='home'),
     # 使用as_view()方法创建类实例
     # http://127.0.0.1:8000/admin/index/book/
-    path('login1/', views.login1),  # ? 为啥2级路由下 响应不行 http://127.0.0.1:8000/index/login/   --- http://127.0.0.1:8000/login/
+    path('login1/', views.login1),
+    # ? 为啥2级路由下 响应不行 http://127.0.0.1:8000/index/login/   --- http://127.0.0.1:8000/login/
 
     path('set_cookie/', views.set_cookie_view),
     path('get_cookie/', views.get_cookie_view),
@@ -51,4 +52,6 @@ urlpatterns = [
     path('user_add_form/', views.user_add_form),
     path('page_test/', views.page_test),
     # path('login_views/', views.login_views),
+    path('upload/', views.upload),
+    path('test_csv/', views.test_csv, name='csv_1'),
 ]

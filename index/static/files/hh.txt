@@ -1,0 +1,405 @@
+{
+    "apiVersion": "v1",
+    "kind": "Pod",
+    "metadata": {
+        "creationTimestamp": "2021-09-28T03:39:20Z",
+        "generateName": "tcloud-coding-prometheus-65646b798d-",
+        "labels": {
+            "app": "tcloud-coding-prometheus",
+            "infra.tce.io/app-name": "tcloud-coding-prometheus",
+            "infra.tce.io/app-resource-group": "1",
+            "infra.tce.io/app-type": "tad",
+            "infra.tce.io/app-version": "1.1.0",
+            "infra.tce.io/comp-name": "tcloud-coding-prometheus",
+            "infra.tce.io/creator": "tceadmin",
+            "infra.tce.io/managed-id": "e50ac79a-9e14-4fe9-9f9a-fdb31a089919",
+            "infra.tce.io/oam-app": "tcloud-coding-prometheus",
+            "infra.tce.io/oam-comp": "tcloud-coding-prometheus",
+            "infra.tce.io/oam-product": "coding",
+            "infra.tce.io/oam-project": "tce",
+            "infra.tce.io/product": "coding",
+            "infra.tce.io/project": "tce",
+            "infra.tce.io/ted.image": "tcloud-coding-prometheus",
+            "module": "tcloud-coding",
+            "pod-template-hash": "65646b798d"
+        },
+        "name": "tcloud-coding-prometheus-65646b798d-kpq4q",
+        "namespace": "tce",
+        "ownerReferences": [
+            {
+                "apiVersion": "apps/v1",
+                "blockOwnerDeletion": true,
+                "controller": true,
+                "kind": "ReplicaSet",
+                "name": "tcloud-coding-prometheus-65646b798d",
+                "uid": "3e8d490c-0c19-42e0-ac9c-c7384b1169ca"
+            }
+        ],
+        "resourceVersion": "1089021065",
+        "selfLink": "/api/v1/namespaces/tce/pods/tcloud-coding-prometheus-65646b798d-kpq4q",
+        "uid": "a12eb8c9-1212-4953-8d03-10d12679a30e"
+    },
+    "spec": {
+        "affinity": {
+            "podAntiAffinity": {
+                "preferredDuringSchedulingIgnoredDuringExecution": [
+                    {
+                        "podAffinityTerm": {
+                            "labelSelector": {
+                                "matchExpressions": [
+                                    {
+                                        "key": "app",
+                                        "operator": "In",
+                                        "values": [
+                                            "tcloud-coding-prometheus"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "topologyKey": "kubernetes.io/hostname"
+                        },
+                        "weight": 100
+                    }
+                ]
+            }
+        },
+        "containers": [
+            {
+                "command": [
+                    "/bin/bash",
+                    "-c",
+                    "/usr/bin/python /usr/bin/supervisord -c /etc/supervisord.conf \u0026\u0026 /usr/sbin/crond \u0026\u0026 tailf /etc/hosts"
+                ],
+                "env": [
+                    {
+                        "name": "APPLICATION_NAME",
+                        "value": "tcloud-coding-prometheus"
+                    },
+                    {
+                        "name": "MY_POD_IP",
+                        "valueFrom": {
+                            "fieldRef": {
+                                "apiVersion": "v1",
+                                "fieldPath": "status.podIP"
+                            }
+                        }
+                    },
+                    {
+                        "name": "MY_POD_HOSTIP",
+                        "valueFrom": {
+                            "fieldRef": {
+                                "apiVersion": "v1",
+                                "fieldPath": "status.hostIP"
+                            }
+                        }
+                    },
+                    {
+                        "name": "MY_POD_NAME",
+                        "valueFrom": {
+                            "fieldRef": {
+                                "apiVersion": "v1",
+                                "fieldPath": "metadata.name"
+                            }
+                        }
+                    }
+                ],
+                "image": "docker.oa.com:8080/tce/tcloud-coding-prometheus:1.1.7-20200921-112946-a75ac50",
+                "imagePullPolicy": "IfNotPresent",
+                "livenessProbe": {
+                    "exec": {
+                        "command": [
+                            "bash",
+                            "/tce/healthchk.sh"
+                        ]
+                    },
+                    "failureThreshold": 3,
+                    "initialDelaySeconds": 30,
+                    "periodSeconds": 5,
+                    "successThreshold": 1,
+                    "timeoutSeconds": 5
+                },
+                "name": "tcloud-coding-prometheus",
+                "ports": [
+                    {
+                        "containerPort": 9090,
+                        "name": "port-1-1",
+                        "protocol": "TCP"
+                    }
+                ],
+                "readinessProbe": {
+                    "exec": {
+                        "command": [
+                            "bash",
+                            "/tce/healthchk.sh"
+                        ]
+                    },
+                    "failureThreshold": 5,
+                    "initialDelaySeconds": 30,
+                    "periodSeconds": 5,
+                    "successThreshold": 1,
+                    "timeoutSeconds": 3
+                },
+                "resources": {
+                    "limits": {
+                        "cpu": "200m",
+                        "memory": "256Mi"
+                    },
+                    "requests": {
+                        "cpu": "100m",
+                        "memory": "128Mi"
+                    }
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "volumeMounts": [
+                    {
+                        "mountPath": "/tce/conf/global",
+                        "name": "volume-config"
+                    },
+                    {
+                        "mountPath": "/tce/conf/cm",
+                        "name": "volume-local-config"
+                    },
+                    {
+                        "mountPath": "/data/storage",
+                        "name": "volume-log"
+                    },
+                    {
+                        "mountPath": "/tce/customize",
+                        "name": "volume-customize-confd",
+                        "readOnly": true
+                    },
+                    {
+                        "mountPath": "/etc/supervisord.d",
+                        "name": "volume-supervisord-confd",
+                        "readOnly": true
+                    },
+                    {
+                        "mountPath": "/sys/fs/cgroup",
+                        "name": "volume-centos-cgroup",
+                        "readOnly": true
+                    },
+                    {
+                        "mountPath": "/etc/localtime",
+                        "name": "volume-zoneinfo",
+                        "readOnly": true
+                    },
+                    {
+                        "mountPath": "/data/customize_packet",
+                        "name": "volume-customize"
+                    },
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "default-token-b6t4d",
+                        "readOnly": true
+                    }
+                ]
+            }
+        ],
+        "dnsConfig": {
+            "options": [
+                {
+                    "name": "single-request-reopen"
+                },
+                {
+                    "name": "timeout",
+                    "value": "1"
+                }
+            ]
+        },
+        "dnsPolicy": "ClusterFirst",
+        "enableServiceLinks": true,
+        "nodeName": "10.21.1.135",
+        "priority": 0,
+        "restartPolicy": "Always",
+        "schedulerName": "default-scheduler",
+        "securityContext": {},
+        "serviceAccount": "default",
+        "serviceAccountName": "default",
+        "subdomain": "gaiastack",
+        "terminationGracePeriodSeconds": 30,
+        "tolerations": [
+            {
+                "effect": "NoExecute",
+                "key": "node.kubernetes.io/not-ready",
+                "operator": "Exists",
+                "tolerationSeconds": 300
+            },
+            {
+                "effect": "NoExecute",
+                "key": "node.kubernetes.io/unreachable",
+                "operator": "Exists",
+                "tolerationSeconds": 300
+            }
+        ],
+        "topologySpreadConstraints": [
+            {
+                "labelSelector": {
+                    "matchLabels": {
+                        "app": "tcloud-coding-prometheus",
+                        "module": "tcloud-coding"
+                    }
+                },
+                "maxSkew": 1,
+                "topologyKey": "topology.kubernetes.io/zone",
+                "whenUnsatisfiable": "DoNotSchedule"
+            }
+        ],
+        "volumes": [
+            {
+                "configMap": {
+                    "defaultMode": 420,
+                    "items": [
+                        {
+                            "key": "global.json",
+                            "path": "global.json"
+                        }
+                    ],
+                    "name": "global.conf.d"
+                },
+                "name": "volume-config"
+            },
+            {
+                "configMap": {
+                    "defaultMode": 420,
+                    "items": [
+                        {
+                            "key": "local.json",
+                            "path": "local.json"
+                        }
+                    ],
+                    "name": "tcloud-coding-prometheus"
+                },
+                "name": "volume-local-config"
+            },
+            {
+                "hostPath": {
+                    "path": "/data/k8s/log/tce/tcloud-coding-prometheus",
+                    "type": ""
+                },
+                "name": "volume-log"
+            },
+            {
+                "configMap": {
+                    "defaultMode": 420,
+                    "items": [
+                        {
+                            "key": "customize_deploy.sh",
+                            "path": "customize_deploy.sh"
+                        },
+                        {
+                            "key": "customize_move.py",
+                            "path": "customize_move.py"
+                        }
+                    ],
+                    "name": "global.customize.d"
+                },
+                "name": "volume-customize-confd"
+            },
+            {
+                "configMap": {
+                    "defaultMode": 420,
+                    "items": [
+                        {
+                            "key": "supervisord.conf",
+                            "path": "supervisord.default.ini"
+                        }
+                    ],
+                    "name": "global.conf.d"
+                },
+                "name": "volume-supervisord-confd"
+            },
+            {
+                "hostPath": {
+                    "path": "/sys/fs/cgroup",
+                    "type": ""
+                },
+                "name": "volume-centos-cgroup"
+            },
+            {
+                "hostPath": {
+                    "path": "/etc/localtime",
+                    "type": ""
+                },
+                "name": "volume-zoneinfo"
+            },
+            {
+                "hostPath": {
+                    "path": "/data/customize_packet",
+                    "type": ""
+                },
+                "name": "volume-customize"
+            },
+            {
+                "name": "default-token-b6t4d",
+                "secret": {
+                    "defaultMode": 420,
+                    "secretName": "default-token-b6t4d"
+                }
+            }
+        ]
+    },
+    "status": {
+        "conditions": [
+            {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2021-09-28T03:39:20Z",
+                "status": "True",
+                "type": "Initialized"
+            },
+            {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2021-11-24T15:25:41Z",
+                "status": "True",
+                "type": "Ready"
+            },
+            {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2021-11-24T15:25:41Z",
+                "status": "True",
+                "type": "ContainersReady"
+            },
+            {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2021-09-28T03:39:20Z",
+                "status": "True",
+                "type": "PodScheduled"
+            }
+        ],
+        "containerStatuses": [
+            {
+                "containerID": "docker://683c6d0bb21b572be952df3898ea2fce263bdf1f39b893f5e2c9a26d5ff475f7",
+                "image": "docker.oa.com:8080/tce/tcloud-coding-prometheus:1.1.7-20200921-112946-a75ac50",
+                "imageID": "docker-pullable://docker.oa.com:8080/tce/tcloud-coding-prometheus@sha256:b84ac311cbe7d878dc86edb2486f53db4a47ff0890bae1a8f9b298c8d562f64d",
+                "lastState": {
+                    "terminated": {
+                        "containerID": "docker://c5fd9c69e07193a1d56f26ad137ff9e1b7833fffddb7cbb77a15fa48648b98a1",
+                        "exitCode": 137,
+                        "finishedAt": "2021-11-24T15:24:57Z",
+                        "reason": "OOMKilled",
+                        "startedAt": "2021-09-28T03:39:33Z"
+                    }
+                },
+                "name": "tcloud-coding-prometheus",
+                "ready": true,
+                "restartCount": 1,
+                "started": true,
+                "state": {
+                    "running": {
+                        "startedAt": "2021-11-24T15:25:02Z"
+                    }
+                }
+            }
+        ],
+        "hostIP": "10.21.1.135",
+        "phase": "Running",
+        "podIP": "192.168.0.211",
+        "podIPs": [
+            {
+                "ip": "192.168.0.211"
+            }
+        ],
+        "qosClass": "Burstable",
+        "startTime": "2021-09-28T03:39:20Z"
+    }
+}
