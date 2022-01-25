@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
 from django.db.models import Count
 from django import forms
@@ -407,6 +408,7 @@ def search_ttile_form(request):
 
 
 # 用来显示查询结果
+@login_required
 def search_title(request):
     # 查询title忽略大小写,所得类型为QuerySet
     if not request.GET.get('title', ''):
@@ -428,6 +430,10 @@ def book_table(request):
     return render(request, 'index/book_table.html', locals())
 
 
+# 如果访问用户没有被授予 index.can_view_book 权限，就会跳转到登录页。这样不仅需要当前用户是已登庄状态，还需要用户拥有 can_view_book 的权限。
+
+
+@permission_required("index.view_book")  # 也可校验多个权限，在方法内添加即可 权限:code_name
 def add_book(request):
     if request.method == 'GET':
         return render(request, 'index/add_book.html')

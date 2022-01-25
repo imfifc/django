@@ -144,3 +144,4 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 LOGIN_REDIRECT_URL = "/index/all_book/"
+LOGIN_URL = "/login/"
