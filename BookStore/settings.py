@@ -143,4 +143,4 @@ AUTHENTICATION_BACKENDS = [
     'user.backends.EmailBackend',
 ]
 
-LOGIN_REDIRECT_URL = "/index/update_book/"
+LOGIN_REDIRECT_URL = "/index/all_book/"

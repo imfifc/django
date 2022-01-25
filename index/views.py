@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 from django.core.paginator import Paginator
 from django.db.models import Count
 from django import forms
@@ -371,7 +371,7 @@ class LoginForm(forms.Form):  # 继承自Form类，
 
 
 # 第二步围绕form对象完成表单。
-def login(request):  # 定义登录处理函数login()
+def login1(request):  # 定义登录处理函数login()
     # print(111,request,type(request),"dir_request",dir(request))
     # print("222 r.post",type(request.POST),dir(request.POST))
     if request.method == "POST":  # request是 HttpRequest的对象，利用它的的method属性，判断请求方法。

@@ -48,5 +48,6 @@ urlpatterns = [
 
     # path('login/', views.login),
     path('login/', LoginView.as_view(template_name="index/login2.html"))
+    # path('login/', LoginView.as_view(template_name="index/login2.html",next_page="/index/redict"))
 
 ]
