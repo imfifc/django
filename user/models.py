@@ -6,6 +6,7 @@ class User(models.Model):  # 创建用户信息表
     username = models.CharField(max_length=100, verbose_name='用户注册')
     password = models.CharField(max_length=100, verbose_name='用户密码')
     create_time = models.DateTimeField(auto_now_add=True)  # 第一次创建的时间
+    email = models.EmailField(verbose_name='邮箱')
 
     class Meta:
         permissions = (

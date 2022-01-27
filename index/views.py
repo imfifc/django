@@ -5,8 +5,10 @@ import time
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
+from django.core.signals import request_started, request_finished
 from django.db.models import Count
 from django import forms
+from django.dispatch import receiver
 from django.shortcuts import render
 
 # Create your views here.
@@ -641,3 +643,38 @@ def test_time(request):
         t1 = time.time()  # 得到当前时间戳
         time.sleep(3)  # 阻塞三秒
         return render(request, 'index/test_cache.html', locals())
+
+
+'''
+# 导入内置信号、创建注册函数，信号中导入注册函数
+# 实现信号注册1
+def request_started_callback(sender, **kwargs):
+    print("请求开始：%s" % kwargs['environ'])
+
+
+def request_finished_callback(sender, **kwargs):
+    print("请求完成")
+
+
+# 回调函数注册到信号上
+request_started.connect(request_started_callback)
+request_finished.connect(request_finished_callback,sender=None, weak=True, dispatch_uid=None)
+
+# receiver：必须要指定的回调函数，信号发送后，就会执行到这个函数。
+# sender：信号的发送者，可以不提供。当回调函数只对特定的 sender 时，可以通过提供这个参数实现过滤。
+# weak：默认值是 True，代表以弱引用的方式存储信号处理器。当 receiver 是局部变量时，可能会被当做垃圾回收掉。为避免这种情况，可以设置为 False。
+# dispatch_uid：用于指定 receiver 的唯一标识符，以防止信号多次发送的情况。
+
+'''
+
+# 实现信号注册2   装饰器 receiver() 的第一个参数是可迭代的对象，可接受一个列表，其中每一个元素都是信号实例
+@receiver(request_started)
+def request_started_callback(sender, **kwargs):
+    # 获取程序执行的环境信息
+    print("请求开始：%s" % kwargs)
+    # print("请求开始：%s" % kwargs['environ'])
+
+
+@receiver(request_finished)
+def request_finished_callback(sender, **kwargs):
+    print("请求完成")

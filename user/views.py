@@ -6,6 +6,7 @@ from django.shortcuts import render
 # Create your views here.
 # 用户的登录逻辑处理
 from user.models import User
+from user.signal import register_signal
 
 
 def login_view(request):
@@ -147,3 +148,12 @@ def reg_view(request):
                 print(e)
                 username_error = '该用户名已经被占用 '
                 return render(request, 'user/register.html', locals())
+
+
+def hello_my_signal(request):
+    # 注意要和回调函数中的**kwargs的参数保持一致
+    # 参数 sender（信号发送者指函数） **named（**kwargs参数相同）
+    register_signal.send(hello_my_signal, request=request, user=User.objects.get(username="hh"))
+    # register_signal.send_robust(hello_my_signal, request=request, user=User.objects.get(username="admin"))
+    print("注册成功已经发送邮件")
+    return HttpResponse('Hello signal')
