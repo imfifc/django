@@ -1,0 +1,12 @@
+<form action="/index/test_time/" method="post">
+    {% csrf_token %}
+{#语法 参数：依次为缓存时间（以秒为单位）以及要被缓存的片段起的名称（bar）。 指定时间后才会 变 #}
+    {% load cache %}
+    {% cache 20 test %}
+        <p>我是缓存的 {{ t1 }}</p>
+    {% endcache %}
+    <h4>
+        我是没有缓存的{{ t1 }}
+    </h4>
+    <input type="submit" value="提交">
+</form>

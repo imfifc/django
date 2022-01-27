@@ -146,3 +146,41 @@ AUTHENTICATION_BACKENDS = [
 LOGIN_REDIRECT_URL = "/index/all_book/"
 LOGIN_URL = "/login/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'index/static/files')
+
+# 数据缓存机制
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',  # 数据库引擎
+        'TIMEOUT': 300,  # 缓存超时时间（默认300秒，None表示永不过期，0表示立即过期）
+        'LOCATION': 'my_cache_table',
+        'MAX_ENTRIES': 3,  # 当前最大缓存数
+        'CULL_FREQUENCY': 3,  # 缓存到达最大个数之后，剔除缓存个数的比例，即 1/CULL_FREQUENCY（默认3）
+    }
+}
+
+# python manage.py createcachetable my_cache_table
+# 使用缓存就是为了减少数据库的查询，但是企业环境下的数据库如果非常高速、高效，那么你可以使用这种机制
+'''
+# 文件缓存  基于window
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': 'c:/foo/bar',  # 若是 Linux 路径写为 /home/cnet/cachetest
+    }
+}
+# 在你无路可走的时候，为了实现达到缓存的目的也可以使用 文件缓存。
+
+
+# 此缓存将内容保存至内存的变量中
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',  # 给缓存放置的内存区设置一个名字
+    }
+}
+
+在视图View中使用
+在路由URL中使用
+在模板中使用
+
+'''

@@ -1,5 +1,6 @@
 import csv
 import os
+import time
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
@@ -16,6 +17,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Template, Context  # 调用template、以及上下文处理器方法
 from django.urls import reverse
 from django.views import View
+from django.views.decorators.cache import cache_page
 
 from BookStore import settings
 from index.models import Book, Author, UserInfo, PubName
@@ -620,3 +622,22 @@ def test_csv(request):
     for user in users:
         writer.writerow([user.username, user.gender])
     return res
+
+
+# 在缓存有效时间内不会阻塞，直到缓存过期重新阻塞3秒
+@cache_page(60 * 30)  # 缓存有效时间30mins
+def test_cache(request):
+    t1 = time.time()  # 得到当前时间戳
+    time.sleep(3)  # 阻塞三秒
+    html = 't1 is %s' % t1
+    return HttpResponse(html)
+
+
+# 视图函数
+def test_time(request):
+    if request.method == 'GET':
+        return render(request, 'index/test_cache.html')
+    elif request.method == 'POST':
+        t1 = time.time()  # 得到当前时间戳
+        time.sleep(3)  # 阻塞三秒
+        return render(request, 'index/test_cache.html', locals())
