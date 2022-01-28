@@ -59,5 +59,6 @@ urlpatterns = [
     path('test_cache/', views.test_cache),  # 使用 视图缓存  发现第一次请求时会阻塞三秒，然后再缓存期间请求页面则不需要阻塞，直到缓存过期重新阻塞
     # ' F12 查看它的响应头，其中的 Cache-Control: max-age=60 代表了最大的过期时间为 60s，它是 HTTP1.1 的产物，而另外一个 Expires 同样代表过期时间，只不过它属于 HTTP1.0 时代，可以把前者看做是后者的补充'
     path('test_time/', views.test_time),  # 模板 缓存
+    path('send_email/', views.send_email),  # 模板 缓存
 
 ]

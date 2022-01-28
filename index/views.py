@@ -4,6 +4,7 @@ import time
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.mail import send_mail, send_mass_mail
 from django.core.paginator import Paginator
 from django.core.signals import request_started, request_finished
 from django.db.models import Count
@@ -667,6 +668,7 @@ request_finished.connect(request_finished_callback,sender=None, weak=True, dispa
 
 '''
 
+
 # 实现信号注册2   装饰器 receiver() 的第一个参数是可迭代的对象，可接受一个列表，其中每一个元素都是信号实例
 @receiver(request_started)
 def request_started_callback(sender, **kwargs):
@@ -678,3 +680,28 @@ def request_started_callback(sender, **kwargs):
 @receiver(request_finished)
 def request_finished_callback(sender, **kwargs):
     print("请求完成")
+
+
+def send_email(request):
+    subject = 'C语言中文网链接'  # 主题
+    from_email = settings.EMAIL_FROM  # 发件人，在settings.py中已经配置
+    to_email = '12345@qq.com'  # 邮件接收者列表
+    # 发送的消息
+    message = 'c语言中文网欢迎你点击登录 http://c.biancheng.net/'  # 发送普通的消息使用的时候message
+    # meg_html = '<a href="http://www.baidu.com">点击跳转</a>'  # 发送的是一个html消息 需要指定
+    send_mail(subject, message, from_email, [to_email])
+    return HttpResponse('OK,邮件已经发送成功!')
+
+
+def send_email2(request):
+    # 单个连接 发送多份邮件
+    subject = 'C语言中文网链接'  # 主题
+    from_email = settings.EMAIL_FROM  # 发件人，在settings.py中已经配置
+    to_email = '12345@qq.com'  # 邮件接收者列表
+    # 发送的消息
+    message1 = ('Subject here', 'Here is the message', 'from@example.com', ['first@example.com', 'other@example.com'])
+    message2 = ('Another Subject', 'Here is another message', 'from@example.com', ['second@test.com'])
+    # 接收元组作为参数
+    send_mass_mail((message1, message2), fail_silently=False)  # fail_silentl运行异常的时候是否报错，默认为True不报错
+    # meg_html = '<a href="http://www.baidu.com">点击跳转</a>'  # 发送的是一个html消息 需要指定
+    return HttpResponse('OK,邮件已经发送成功!')
