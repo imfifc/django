@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
+import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -75,12 +76,16 @@ WSGI_APPLICATION = 'BookStore.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+
+# Django为了解决数据库创建与销毁耗时的问题,此时 Django 将会在内存（memory）中创建数据库 ; python manage.py test -v 3 index.tests.ExampleTest
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+    # print(111,DATABASES)
 
 DATABASES = {
     'default': {
@@ -90,7 +95,10 @@ DATABASES = {
         'PASSWORD': '123456',
         'HOST': '127.0.0.1',
         'PORT': '3306',
-    }
+    },
+    # 'TEST': {
+    #     'CHARSET': 'utf8',
+    #     'COLLATION': 'utf8_general_ci'}
 }
 
 # Password validation
