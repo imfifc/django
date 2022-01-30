@@ -39,3 +39,11 @@ $ sudo uwsgi --ini uwsgi.ini
 $ cd 项目文件夹
 $ sudo uwsgi --stop uwsgi.pid
 '''
+
+
+'''
+当 uWSGI 启动后，当前 Django 项目的程序已变成后台守护进程，在关闭当前终端时此进程也不会停止。执行完我启动命令后，可以看到在项目的主目录下又生成了两个文件分别是 uwsgi.pid 与 uwsgi.log，
+[uWSGI] getting INI configuration from uwsgi.ini
+
+此时我们我们在没有使用 runserver 启动的情况下，可以访问 127.0.0.1:8000/admin 进行测试，你会看到，我们成功等了后台界面
+'''
